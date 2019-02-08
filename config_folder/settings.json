@@ -1,0 +1,14 @@
+{
+  "general": {
+    "def_key": "Raccolta$",
+    "imap_options": [],
+    "def_dest": "C:\\",
+    "def_number": 10,
+    "settings": "config_folder\\scuola.json",
+    "def_info": false
+  },
+  "email": {
+    "email": "johnsmith@example.com",
+    "password": "password"
+  }
+}
