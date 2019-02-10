@@ -23,7 +23,7 @@ __contact__ = "oseaetobia@gmail.com"
 __copyright__ = "Copyright (C) 2019, Oxke"
 __license__ = "GNU GPLv3.0"  # Read the file LICENSE for more information
 __project__ = "emailAuto"
-__version__ = "v2.2.1"
+__version__ = "v2.2.2"
 __date__ = "2019-02-03"
 
 import argparse
