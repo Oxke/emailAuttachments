@@ -4,6 +4,7 @@
 di allegati email
 
 ##
+
 Potete usare questo progetto per controllare email di un certo tipo (si 
 possono usare gli attributi di imaplib per selezionare le email in arrivo) e 
 scaricare gli allegati in modo sistematico e ordinato.
@@ -34,9 +35,11 @@ finestra di quanti hanno risposto in percentuale (che è la finestra che
 lavora sincronizzandosi) e di che file sono arrivati.
 
 ##Screenshot
+
 ![Screenshot](http://oxke.altervista.org/screenshots/Capture.PNG)
 
 ##Help
+
 Questo l'help di argparse (ottenibile con il comando `python main.py -h`):
   ```
 usage: main.py [-h] [-i] {[Main],Delete} ...
@@ -72,6 +75,7 @@ Comando | Funzione
 Infine il sottoparser "Delete" richiede solamente di inserire il nome della Raccolta da eliminare.
 
 ##Moduli di terze-parti
+
 è necessario usare _`pip`_ per ottenere:
 * IMAPclient
 * pyCryptoDome
@@ -80,6 +84,7 @@ Infine il sottoparser "Delete" richiede solamente di inserire il nome della Racc
 e poter usare il programma
 
 #Licenza
+
 Un progetto per selezionare e ordinare alcune mail ricevute
 Copyright (C) 2019 Oxke
 
