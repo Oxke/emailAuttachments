@@ -31,8 +31,8 @@ from Crypto.Cipher import AES
 from Crypto.Hash import SHA3_256
 
 
-def encrypt_eaa(key, in_filename, data=None, out_filename=None, chunksize=64 *
-                                                                          1024):
+def encrypt_eaa(key, in_filename, data=None, out_filename=None,
+                chunksize=64 * 1024):
     if in_filename[-5:] != '.json':
         in_filename += '.json'
     if data:

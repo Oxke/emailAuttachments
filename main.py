@@ -28,6 +28,7 @@ __date__ = "2019-02-03"
 
 import argparse
 import datetime
+import getpass
 import pprint
 import subprocess
 import sys
@@ -50,20 +51,36 @@ def arg():
         dati = decrypt_eaa(KEY,
                            including_root(def_settings['general']['settings']))
     except Exception as e:
-        if ['-h'] != sys.argv[1:]:
+        if '-h' not in sys.argv[1:]:
             raise e
         else:
             dati = None
     parser = argparse.ArgumentParser(description='Programmino per gestire le '
                                                  'auto email contenenti '
-                                                 'allegati')
+                                                 'allegati. Se non si '
+                                                 'specifica un subparser, '
+                                                 'verrà considerato il '
+                                                 '"Main", a meno che non si '
+                                                 'chiami l\'help e in questo '
+                                                 'modo si otterrà quello '
+                                                 'generale. Per ottenere '
+                                                 'l\'help del "Main" basterà '
+                                                 'quindi chiamare "python '
+                                                 'main.py Main -h"',
+                                     usage='main.py [-h] [-i]'
+                                           ' {[Main],Delete} ...')
     parser.add_argument('-i', '--info', help='prima di iniziare il programma '
                                              'stampa le impostazioni',
                         action='store_true')
     subparsers = parser.add_subparsers(help='Possibili quattro '
                                             'diversi tipi di azione',
                                        dest='command')
-    parser1 = subparsers.add_parser('Main', help='Main action')
+    parser1 = subparsers.add_parser('Main', help='Main action',
+                                    usage="main.py [Main -h] [-s SETTINGS] [-d "
+                                          "DESTINATION] [-f FOLDER] "
+                                          "[-n NUMBER] [-o OPTIONS] "
+                                          "[-em EMAIL] [-pwd PASSWORD] "
+                                          "[-ss SETSETTINGS] [key]")
     parser1.add_argument("-s", "--settings", help='choose settings file')
     parser1.add_argument("-d", "--destination", help='where to download '
                                                      'attachments')
@@ -118,14 +135,13 @@ if __name__ == "__main__":
     KEY = None
     if len(sys.argv) == 1:
         sys.argv += ['Main']
-    if sys.argv[1] != '-h':
+    if '-h' not in sys.argv:
         if sys.argv[1] not in ['Main', 'Delete']:
             if sys.argv[1] == '-i':
                 sys.argv = sys.argv[:2] + ['Main'] + sys.argv[2:]
             else:
                 sys.argv = sys.argv[:1] + ['Main'] + sys.argv[1:]
-        KEY = input('Insert password -> ')
-    print(sys.argv)
+        KEY = getpass.getpass('Insert password -> ')
     key, act, command = arg()
     config_f = including_root(f"config_folder\\data_config\\data_c"
                               f"onfig_{key}.eaa")
