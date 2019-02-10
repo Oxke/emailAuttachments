@@ -25,14 +25,14 @@ __project__ = "emailAuto"
 import argparse
 import datetime
 import glob
-import json
-import os
 import re
 import smtplib
 from pathlib import Path
 
 import imapclient
 import pyzmail
+
+from crypto import *
 
 SENT = []
 NOMEHOST = {
@@ -93,6 +93,7 @@ def arg():
                                                  'principalmente)')
     parser.add_argument("key", help='chiave usata per filtrare le email '
                                     'classe ESABAC H')
+    parser.add_argument("keykey", help="KEY used to accedere to eaa files")
     parser.add_argument("-d", "--destination", help='where to download '
                                                     'attachments')
     parser.add_argument("-f", "--folder", help='in which folder?')
@@ -111,10 +112,10 @@ def arg():
         folder = os.path.join(args.destination, args.folder)
 
     if os.path.exists(os.path.join(config_folder,
-                                   f'data_config_{args.key}.json')):
-        with open(os.path.join(config_folder,
-                               f'data_config_{args.key}.json')) as json_f:
-            data = json.load(json_f)
+                                   f'data_config_{args.key}.eaa')):
+        data = decrypt_eaa(args.keykey,
+                           os.path.join(config_folder,
+                                        f'data_config_{args.key}.eaa'))
         folder = data['folder']
         sent = glob.glob(folder + "/*")
         sent = [os.path.split(path)[1] for path in sent]
@@ -141,9 +142,9 @@ def arg():
                 "folder": folder,
                 "number": args.number,
                 "creationDate": str(datetime.date.today())}
-        with open(os.path.join(config_folder,
-                               f'data_config_{args.key}.json'), 'w') as json_f:
-            json.dump(data, json_f)
+        encrypt_eaa(args.keykey,
+                    os.path.join(config_folder, f'data_config_{args.key}.json'),
+                    data=data)
 
     return data['key'], data['folder'], data['number'], args.options, (
         args.email,

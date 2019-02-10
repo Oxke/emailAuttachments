@@ -28,25 +28,32 @@ __date__ = "2019-02-03"
 
 import argparse
 import datetime
-import json
-import os
 import pprint
 import subprocess
 import sys
 from pathlib import Path
 from shutil import rmtree
 
+from crypto import *
 
-def including_root(path) -> str:
+
+def including_root(path):
     """Return absolute path"""
     return os.path.join(Path(__file__).parent, path)
 
 
 def arg():
-    with open(including_root('config_folder\\settings.json')) as def_sett_file:
-        def_settings = json.load(def_sett_file)
-    with open(including_root(def_settings['general']["settings"])) as sett_file:
-        dati = json.load(sett_file)
+    try:
+        with open(including_root(
+                'config_folder\\settings.json')) as def_sett_file:
+            def_settings = json.load(def_sett_file)
+        dati = decrypt_eaa(KEY,
+                           including_root(def_settings['general']['settings']))
+    except Exception as e:
+        if ['-h'] != sys.argv[1:]:
+            raise e
+        else:
+            dati = None
     parser = argparse.ArgumentParser(description='Programmino per gestire le '
                                                  'auto email contenenti '
                                                  'allegati')
@@ -62,8 +69,8 @@ def arg():
                                                      'attachments')
     parser1.add_argument("-f", "--folder", help='in which folder?')
     parser1.add_argument("-n", "--number", help="number emails to receive")
-    parser1.add_argument('-k', "--key", help='chiave usata per filtrare le '
-                                             'email')
+    parser1.add_argument("key", help='chiave usata per filtrare le '
+                                     'email', nargs='?', default=None)
     parser1.add_argument('-o', '--options', help='imap options for selecting '
                                                  'emails')
     parser1.add_argument('-em', '--email', help='user_email_address')
@@ -72,16 +79,16 @@ def arg():
                                                       'settings')
     parser2 = subparsers.add_parser('Delete', help='help for Delete')
     parser2.add_argument('delete', help='distrugge tutto')
-    args = parser.parse_args()
+    args = parser.parse_args(sys.argv[1:])
     if args.command == 'Main':
         if args.settings:
-            with open(including_root(f'config_folder\\{args.settings}.json')) \
-                    as setf:
-                dati = json.load(setf)
+            dati = decrypt_eaa(KEY,
+                               including_root(
+                                   f'config_folder\\{args.settings}.eaa'))
         numb = 1
         def_key = dati['general']['def_key'].replace('$', str(numb))
         while os.path.exists(including_root(f'config_folder\\data_config\\'
-                                            f'data_config_{def_key}.json')):
+                                            f'data_config_{def_key}.eaa')):
             numb += 1
             def_key = dati['general']['def_key'].replace('$', str(numb))
         dati['general']['def_key'] = args.key if args.key else def_key
@@ -104,17 +111,26 @@ def arg():
         dati['general']['def_key'] = args.delete
         return dati['general']['def_key'], (args.info, dati,
                                             args.delete), 'Delete'
-    else:
-        raise argparse.ArgumentError('False Command')
+    return dati['general']['def_key'], (None, None, None), 'Main'
 
 
 if __name__ == "__main__":
+    KEY = None
+    if len(sys.argv) == 1:
+        sys.argv += ['Main']
+    if sys.argv[1] != '-h':
+        if sys.argv[1] not in ['Main', 'Delete']:
+            if sys.argv[1] == '-i':
+                sys.argv = sys.argv[:2] + ['Main'] + sys.argv[2:]
+            else:
+                sys.argv = sys.argv[:1] + ['Main'] + sys.argv[1:]
+        KEY = input('Insert password -> ')
+    print(sys.argv)
     key, act, command = arg()
     config_f = including_root(f"config_folder\\data_config\\data_c"
-                              f"onfig_{key}.json")
+                              f"onfig_{key}.eaa")
     if os.path.exists(config_f):
-        with open(config_f) as jsn:
-            data = json.load(jsn)
+        data = decrypt_eaa(KEY, config_f)
     else:
         data = {
             'creationDate': str(datetime.date.today()),
@@ -142,16 +158,13 @@ if __name__ == "__main__":
         pprint.pprint(setting)
         if '$' not in setting['general']['def_key']:
             setting['general']['def_key'] += '$'
-        if input(f'Vuoi che il file settings {name} diventi di default? -> '
+        if input(f'Vuoi che il file settings "{name}" diventi di default? -> '
                  f'').lower() not in ('no', 'n'):
-            with open(including_root('config_folder\\settings.json')) as sf:
-                d = json.load(sf)
-            with open(including_root('config_folder\\settings.json'),
-                      'w') as sf:
-                d['general']['settings'] = f'config_folder\\{name}.json'
-                json.dump(d, sf)
-        with open(including_root(f'config_folder\\{name}.json'), 'w') as sf:
-            json.dump(setting, sf)
+            d = decrypt_eaa(KEY, including_root(
+                'config_folder\\settings.eaa'))
+            d['general']['settings'] = f'config_folder\\{name}.eaa'
+            encrypt_eaa(KEY, 'config_folder\\settings.json', data=d)
+        encrypt_eaa(KEY, f'config_folder\\{name}.json', data=setting)
     else:
         dest = os.path.split(data['folder'])[0]
         name_folder = os.path.split(data['folder'])[1]
@@ -162,7 +175,7 @@ if __name__ == "__main__":
         argscheck = [sys.executable, including_root("check.py"), "-d",
                      dest, "-f", name_folder, "-n", num,
                      '-em', act[1]['email']['email'], '-pwd',
-                     act[1]['email']['password'], data['key']]
+                     act[1]['email']['password'], data['key'], KEY]
         if len(act[1]['general']['imap_options']) != 0:
             argscheck += ['-o', " ".join(act[1]['general']['imap_options'])]
         subprocess.Popen(argscheck, creationflags=subprocess.CREATE_NEW_CONSOLE)
