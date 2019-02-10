@@ -71,12 +71,12 @@ Comando | Funzione
 Infine il sottoparser "Delete" richiede solamente di inserire il nome della Raccolta da eliminare.
 
 ## Thirdy-part modules
-è necessario usare _`pip`_ per ottenere:
+Il programma necessita di:
 * IMAPclient
 * pyCryptoDome
 * pyzmail
 
-e poter usare il programma
+per poter funzionare
 
 ## License
 Un progetto per selezionare e ordinare alcune mail ricevute
