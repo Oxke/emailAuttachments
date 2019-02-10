@@ -20,7 +20,7 @@ sicurezza è possibile usare per un file settings una diversa password)s
 Viene chiamata "Raccolta" tutta l'operazione di controllo e salvataggio degli 
 allegati.
   
-#### Avvio
+#### Boot
 Il modo più consigliato di avviare il programma è creando un file `.bat` che
 avvii il main.py ed eseguirlo (su windows anche dalla _run dialog box_). Il 
 main avvierà gli altri due programmi. Si può anche avviare direttamente il 
@@ -35,7 +35,7 @@ lavora sincronizzandosi) e di che file sono arrivati.
 ## Screenshot
 ![Screenshot](http://oxke.altervista.org/screenshots/Capture.PNG)
 
-## Help
+## Documentation
 Questo l'help di argparse (ottenibile con il comando `python main.py -h`):
   ```
 usage: main.py [-h] [-i] {[Main],Delete} ...
@@ -70,7 +70,7 @@ Comando | Funzione
 
 Infine il sottoparser "Delete" richiede solamente di inserire il nome della Raccolta da eliminare.
 
-## Moduli di terze-parti
+## Thirdy-part modules
 è necessario usare _`pip`_ per ottenere:
 * IMAPclient
 * pyCryptoDome
@@ -78,7 +78,7 @@ Infine il sottoparser "Delete" richiede solamente di inserire il nome della Racc
 
 e poter usare il programma
 
-## Licenza
+## License
 Un progetto per selezionare e ordinare alcune mail ricevute
 Copyright (C) 2019 Oxke
 
