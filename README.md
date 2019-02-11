@@ -2,7 +2,8 @@
 > Progetto per gestire email automatiche e ricezione automatica e sistematica 
 di allegati email
 
-[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-372/)[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FOxke%2FemailAuttachments.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FOxke%2FemailAuttachments?ref=badge_shield)
+[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-372/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FOxke%2FemailAuttachments.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FOxke%2FemailAuttachments?ref=badge_shield)
 
 ##
 Potete usare questo progetto per controllare email di un certo tipo (si 
