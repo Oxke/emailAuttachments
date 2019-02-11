@@ -21,7 +21,7 @@ I file settings sono salvati come `*.eaa` (EmailAuttachments ->
 EmailAuto-Attachments) e per una questione di sicurezza sono crittati, 
 perciò, a meno che non si chieda l'help, verrà sempre chiesto di inserire 
 una password. (Anche se è sconsigliabile, in casi di necessità di maggiore 
-sicurezza è possibile usare per un file settings una diversa password)s
+sicurezza è possibile usare per un file settings una diversa password)
 
 Viene chiamata "Raccolta" tutta l'operazione di controllo e salvataggio degli 
 allegati.
