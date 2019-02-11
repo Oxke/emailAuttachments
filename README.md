@@ -2,8 +2,11 @@
 > Progetto per gestire email automatiche e ricezione automatica e sistematica 
 di allegati email
 
+[![GitHub release](https://img.shields.io/github/release/Oxke/emailAuttachments.svg)](https://GitHub.com/Oxke/emailAuttachments/releases/)
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-372/)
+[![GitHub license](https://img.shields.io/github/license/Oxke/emailAuttachments.svg)](https://github.com/Oxke/emailAuttachments/blob/master/LICENSE)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FOxke%2FemailAuttachments.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FOxke%2FemailAuttachments?ref=badge_shield)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Oxke/emailAuttachments/graphs/commit-activity)
 
 ##
 Potete usare questo progetto per controllare email di un certo tipo (si 
@@ -97,3 +100,5 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
