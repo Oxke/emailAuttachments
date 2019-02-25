@@ -173,6 +173,7 @@ def main(key, folder, number, imap_options, email):
                     res = identifier_regex.search(message.get_subject())
                     if res:
                         # noinspection PyUnresolvedReferences
+                        mex = f'Subject: Re: {message.get_subject()}\n{nofile}
                         for part in message.walk():
                             if part.get_content_maintype() == 'multipart':
                                 continue
@@ -185,8 +186,9 @@ def main(key, folder, number, imap_options, email):
                                 if not os.path.isfile(filepath):
                                     with open(filepath, 'wb') as fp:
                                         fp.write(part.get_payload(decode=True))
-                        mex = f'Subject: Re: {message.get_subject()}\n{msg}'
-                        SENT.append(res.group(3))
+                                mex = f'Subject: Re: {message.get_subject()}\n{msg}'
+                                SENT.append(res.group(3))
+
                     else:
                         print(f'NUOVA MAIL ILLEGALE da '
                               f'{message.get_addresses("from")}')
@@ -218,4 +220,5 @@ if __name__ == "__main__":
             "formattazione dell'oggetto, che mi ha impedito di riconoscerne " \
             "la corretta appartenenza. Ordunque, le consiglio di inviare di " \
             "nuovo la mail con l'oggetto che inizi in questo formato: "
+    nofile = ''
     main(*arg())
