@@ -22,17 +22,29 @@ __author__ = "Oxke"
 __license__ = "GNU GPLv3.0"  # Read the file LICENSE for more information
 __project__ = "emailAuto"
 
+import getpass
 import json
 import os
 import struct
 
+import keyring
 from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA3_256
 
 
-def encrypt_eaa(key, in_filename, data=None, out_filename=None,
+def encrypt_eaa(service, in_filename, data=None, out_filename=None,
                 chunksize=64 * 1024):
+    key = getpass.getpass(f'Quale vuoi che sia la password per '
+                          f'"{os.path.split(in_filename)[-1]}"? '
+                          f'(lascia vuoto e imposterò questa '
+                          f'password come la MasterPassword)-> ')
+    if key == '':
+        key = keyring.get_password('emauto', 'master')
+        if key is None:
+            key = getpass.getpass('Impostare la MasterPassword -> ')
+            keyring.set_password('emauto', 'master', key)
+    keyring.set_password(service, in_filename, key)
     if in_filename[-5:] != '.json':
         in_filename += '.json'
     if data:
@@ -62,7 +74,21 @@ def encrypt_eaa(key, in_filename, data=None, out_filename=None,
     os.remove(in_filename)
 
 
-def decrypt_eaa(key, in_filename, out_filename=None, chunksize=64 * 1024):
+def decrypt_eaa(service, in_filename, key=None, out_filename=None,
+                chunksize=64 * 1024):
+    key = key if key else keyring.get_password(service, in_filename)
+    if key is None:
+        key = getpass.getpass(f'Non conosco la password per '
+                              f'"{os.path.split(in_filename)[-1]}", '
+                              f'inseriscila (se lasci vuoto, provo a usare la '
+                              f'MasterPassword)-> ')
+        if key == '':
+            key = keyring.get_password('emauto', 'master')
+            if key is None:
+                key = getpass.getpass('Impostare la MasterPassword -> ')
+                keyring.set_password('emauto', 'master', key)
+        keyring.set_password(service, in_filename, key)
+
     if not out_filename:
         out_filename = os.path.splitext(in_filename)[0]
     key = SHA3_256.new().update(key.encode()).digest()

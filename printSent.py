@@ -44,7 +44,7 @@ def main(folder, key, number):
     sent = {}
     while len(sent) < number:
         os.system('cls')
-        print(f'Persone che hanno inviato l\'allegato per la raccolta "{key}"')
+        print(f'Allegati ricevuti e mittenti per la raccolta "{key}"')
         sent = glob.glob(folder + "/*")
         sent = [os.path.split(path)[1] for path in sent]
         resses = []
@@ -61,7 +61,7 @@ def main(folder, key, number):
             print(f'\rAggiornamento tra {i}', end='')
             time.sleep(1)
         wheel = '/-\\|'
-        for i in range(20):
+        for i in range(15):
             print(f'\rAggiornamento{"." * (i % 4) + " " * (3 - (i % 4))}'
                   f'  {wheel[i % 4]}', end='')
             time.sleep(0.1)

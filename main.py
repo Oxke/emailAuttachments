@@ -23,12 +23,11 @@ __contact__ = "oseaetobia@gmail.com"
 __copyright__ = "Copyright (C) 2019, Oxke"
 __license__ = "GNU GPLv3.0"  # Read the file LICENSE for more information
 __project__ = "emailAuto"
-__version__ = "v2.2.2"
+__version__ = "v2.3.0"
 __date__ = "2019-02-03"
 
 import argparse
 import datetime
-import getpass
 import pprint
 import subprocess
 import sys
@@ -48,7 +47,7 @@ def arg():
         with open(including_root(
                 'config_folder\\settings.json')) as def_sett_file:
             def_settings = json.load(def_sett_file)
-        dati = decrypt_eaa(KEY,
+        dati = decrypt_eaa('config_folder',
                            including_root(def_settings['general']['settings']))
     except Exception as e:
         if '-h' not in sys.argv[1:]:
@@ -99,9 +98,9 @@ def arg():
     args = parser.parse_args(sys.argv[1:])
     if args.command == 'Main':
         if args.settings:
-            dati = decrypt_eaa(KEY,
-                               including_root(
-                                   f'config_folder\\{args.settings}.eaa'))
+            dati = decrypt_eaa('config_folder',
+                               including_root(f'config'
+                                              f'_folder\\{args.settings}.eaa'))
         numb = 1
         def_key = dati['general']['def_key'].replace('$', str(numb))
         while os.path.exists(including_root(f'config_folder\\data_config\\'
@@ -132,7 +131,6 @@ def arg():
 
 
 if __name__ == "__main__":
-    KEY = None
     if len(sys.argv) == 1:
         sys.argv += ['Main']
     if '-h' not in sys.argv:
@@ -141,18 +139,19 @@ if __name__ == "__main__":
                 sys.argv = sys.argv[:2] + ['Main'] + sys.argv[2:]
             else:
                 sys.argv = sys.argv[:1] + ['Main'] + sys.argv[1:]
-        KEY = getpass.getpass('Insert password -> ')
     key, act, command = arg()
     config_f = including_root(f"config_folder\\data_config\\data_c"
                               f"onfig_{key}.eaa")
     if os.path.exists(config_f):
-        data = decrypt_eaa(KEY, config_f)
+        data = decrypt_eaa('data_config', config_f)
     else:
         data = {
             'creationDate': str(datetime.date.today()),
             'key': key,
             'folder': os.path.join(act[1]['general']['def_dest'], key),
             'number': act[1]['general']['def_number'],
+            'email': act[1]['email']['email'],
+            'imap_options': act[1]['general']['imap_options'],
         }
     if act[0]:
         pprint.pprint(data)
@@ -163,6 +162,7 @@ if __name__ == "__main__":
             try:
                 rmtree(data['folder'])
                 os.remove(config_f)
+                keyring.delete_password('data_config', config_f)
                 print('Eliminata!')
             except Exception as ex:
                 print("C'è stato un errore:", ex, sep=' ')
@@ -176,11 +176,13 @@ if __name__ == "__main__":
             setting['general']['def_key'] += '$'
         if input(f'Vuoi che il file settings "{name}" diventi di default? -> '
                  f'').lower() not in ('no', 'n'):
-            d = decrypt_eaa(KEY, including_root(
-                'config_folder\\settings.eaa'))
+            d = decrypt_eaa('config_folder',
+                            including_root('config_folder\\settings.eaa'))
             d['general']['settings'] = f'config_folder\\{name}.eaa'
-            encrypt_eaa(KEY, 'config_folder\\settings.json', data=d)
-        encrypt_eaa(KEY, f'config_folder\\{name}.json', data=setting)
+            encrypt_eaa('config_folder',
+                        including_root('config_folder\\settings.json'), data=d)
+        encrypt_eaa('config_folder',
+                    including_root('config_folder\\{name}.json'), data=setting)
     else:
         dest = os.path.split(data['folder'])[0]
         name_folder = os.path.split(data['folder'])[1]
@@ -191,7 +193,7 @@ if __name__ == "__main__":
         argscheck = [sys.executable, including_root("check.py"), "-d",
                      dest, "-f", name_folder, "-n", num,
                      '-em', act[1]['email']['email'], '-pwd',
-                     act[1]['email']['password'], data['key'], KEY]
+                     act[1]['email']['password'], data['key']]
         if len(act[1]['general']['imap_options']) != 0:
             argscheck += ['-o', " ".join(act[1]['general']['imap_options'])]
         subprocess.Popen(argscheck, creationflags=subprocess.CREATE_NEW_CONSOLE)

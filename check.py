@@ -93,7 +93,6 @@ def arg():
                                                  'principalmente)')
     parser.add_argument("key", help='chiave usata per filtrare le email '
                                     'classe ESABAC H')
-    parser.add_argument("keykey", help="KEY used to accedere to eaa files")
     parser.add_argument("-d", "--destination", help='where to download '
                                                     'attachments')
     parser.add_argument("-f", "--folder", help='in which folder?')
@@ -113,7 +112,7 @@ def arg():
 
     if os.path.exists(os.path.join(config_folder,
                                    f'data_config_{args.key}.eaa')):
-        data = decrypt_eaa(args.keykey,
+        data = decrypt_eaa('data_config',
                            os.path.join(config_folder,
                                         f'data_config_{args.key}.eaa'))
         folder = data['folder']
@@ -142,7 +141,7 @@ def arg():
                 "folder": folder,
                 "number": args.number,
                 "creationDate": str(datetime.date.today())}
-        encrypt_eaa(args.keykey,
+        encrypt_eaa('data_config',
                     os.path.join(config_folder, f'data_config_{args.key}.json'),
                     data=data)
 
@@ -172,8 +171,8 @@ def main(key, folder, number, imap_options, email):
                         raw_messages[uid][b'BODY[]'])
                     res = identifier_regex.search(message.get_subject())
                     if res:
+                        mex = f'Subject: Re: {message.get_subject()}\n{nofile}'
                         # noinspection PyUnresolvedReferences
-                        mex = f'Subject: Re: {message.get_subject()}\n{nofile}
                         for part in message.walk():
                             if part.get_content_maintype() == 'multipart':
                                 continue
@@ -186,15 +185,16 @@ def main(key, folder, number, imap_options, email):
                                 if not os.path.isfile(filepath):
                                     with open(filepath, 'wb') as fp:
                                         fp.write(part.get_payload(decode=True))
-                                mex = f'Subject: Re: {message.get_subject()}\n{msg}'
+                                mex = f'Subject: Re: ' \
+                                    f'{message.get_subject()}\n{msg}'
                                 SENT.append(res.group(3))
 
                     else:
                         print(f'NUOVA MAIL ILLEGALE da '
                               f'{message.get_addresses("from")}')
-                        mex = error + f'"[{key}] Nome Cognome".\nGrazie per ' \
-                            f'l\'attenzione (anche lei dovrebbe ringraziare ' \
-                            f'me a dirla tutta...) e arrivederci\nemailAuto'
+                        mex = error + f'"[{key}] Nome Cognome".\n\nGrazie per' \
+                            f' l\'attenzione (anche lei dovrebbe ringraziare ' \
+                            f'me a dirla tutta...) e arrivederci\n\nemailAuto'
                     mex = mex.encode('latin')
                     if (not re.search('^\[.+] [A-Z][a-z]+ [A-Z][a-z]+',
                                       message.get_subject())) or mex[9] != 'E':
@@ -212,13 +212,18 @@ def main(key, folder, number, imap_options, email):
 if __name__ == "__main__":
     msg = 'Ciao,\nGrazie per aver mandato correttamente ' \
           'l\'allegato, che è appena stato ricevuto e salvato ' \
-          'automaticamente.' \
-          '\nGrazie e arrivederci\nemailAuto'
+          'automaticamente.\n\nGrazie e arrivederci\n\nemailAuto'
     error = "Subject: ERRORE! Non capisci niente!\nBuongiorno,\nmi spiace per" \
             " il disagio ma ci tengo a dirle che la sua mail non è stata " \
             "ricevuta correttamente a causa di un SUO errore nella " \
             "formattazione dell'oggetto, che mi ha impedito di riconoscerne " \
             "la corretta appartenenza. Ordunque, le consiglio di inviare di " \
             "nuovo la mail con l'oggetto che inizi in questo formato: "
-    nofile = ''
+    nofile = 'Ciao,\nGrazie per aver mandato correttamente la mail con ' \
+             'l\'oggetto indicato nel modo corretto.\nLa informo però che io ' \
+             'son pensato per gestire e scaricare gli allegati e inoltre non ' \
+             'leggo mai il testo della mail. Quindi La informo che non ho ' \
+             'trovato alcun allegato nella sua mail e che la mail non verrà ' \
+             'letta né da un essere umano né tantomeno da me.\n\nDistinti ' \
+             'Saluti in attesa di allegati\n\nemailAuto'
     main(*arg())

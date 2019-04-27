@@ -18,10 +18,15 @@ dalla seconda si può riutilizzare un set di preferenze chiamato 'settings
 file' salvato la prima volta con un nome a scelta.
 
 I file settings sono salvati come `*.eaa` (EmailAuttachments -> 
-EmailAuto-Attachments) e per una questione di sicurezza sono crittati, 
-perciò, a meno che non si chieda l'help, verrà sempre chiesto di inserire 
-una password. (Anche se è sconsigliabile, in casi di necessità di maggiore 
-sicurezza è possibile usare per un file settings una diversa password)
+EmailAuto-Attachments) e per una questione di sicurezza sono crittati, perciò
+bisognerà ogni volta che si crea un progetto scrivere la password di 
+crittatura, che verrà salvata da keyring. Per comodità, esiste una 
+MasterPassword impostabile e che può essere applicata a un file scrivendo 
+come password '' (ossia lasciando vuoto). La prima volta che lo si fa 
+chiederà di inserire una MasterPassword. Quest'ultima sarà modificabile 
+dalla versione 3.0.0 del programma, dove ci sarà un'altro subparser dove si 
+possono visualizzare tutte le impostazioni e modificarle singolarmente senza
+ dover creare una Raccolta.
 
 Viene chiamata "Raccolta" tutta l'operazione di controllo e salvataggio degli 
 allegati.
@@ -80,7 +85,8 @@ Infine il sottoparser "Delete" richiede solamente di inserire il nome della Racc
 Il programma necessita di:
 * IMAPclient
 * pyCryptoDome
-* pyzmail
+* pyzmail36
+* keyring
 
 per poter funzionare
 
@@ -90,8 +96,7 @@ Copyright (C) 2019 Oxke
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+the Free Software Foundation, version 3 of the License.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
