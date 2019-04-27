@@ -5,8 +5,7 @@
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
+#  the Free Software Foundation, version 3 of the License.
 #
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,8 +32,9 @@ from Crypto.Cipher import AES
 from Crypto.Hash import SHA3_256
 
 
-def encrypt_eaa(service, in_filename, data=None, out_filename=None,
-                chunksize=64 * 1024):
+def encrypt_eaa(in_filename, data=None, out_filename=None, chunksize=64 * 1024):
+    key_pwd = os.path.splitext(os.path.split(in_filename)[-1])[0]
+    service = os.path.split(in_filename)[-2]
     key = getpass.getpass(f'Quale vuoi che sia la password per '
                           f'"{os.path.split(in_filename)[-1]}"? '
                           f'(lascia vuoto e imposterò questa '
@@ -44,7 +44,7 @@ def encrypt_eaa(service, in_filename, data=None, out_filename=None,
         if key is None:
             key = getpass.getpass('Impostare la MasterPassword -> ')
             keyring.set_password('emauto', 'master', key)
-    keyring.set_password(service, in_filename, key)
+    keyring.set_password(service, key_pwd, key)
     if in_filename[-5:] != '.json':
         in_filename += '.json'
     if data:
@@ -61,7 +61,6 @@ def encrypt_eaa(service, in_filename, data=None, out_filename=None,
         with open(out_filename, 'wb') as outfile:
             outfile.write(struct.pack('<Q', filesize))
             outfile.write(iv)
-
             while True:
                 chunk = infile.read(chunksize)
                 if len(chunk) == 0:
@@ -74,9 +73,10 @@ def encrypt_eaa(service, in_filename, data=None, out_filename=None,
     os.remove(in_filename)
 
 
-def decrypt_eaa(service, in_filename, key=None, out_filename=None,
-                chunksize=64 * 1024):
-    key = key if key else keyring.get_password(service, in_filename)
+def decrypt_eaa(in_filename, key=None, out_filename=None, chunksize=64 * 1024):
+    key_pwd = os.path.splitext(os.path.split(in_filename)[-1])[0]
+    service = os.path.split(os.path.split(in_filename)[-2])[-1]
+    key = key if key else keyring.get_password(service, key_pwd)
     if key is None:
         key = getpass.getpass(f'Non conosco la password per '
                               f'"{os.path.split(in_filename)[-1]}", '
@@ -87,7 +87,7 @@ def decrypt_eaa(service, in_filename, key=None, out_filename=None,
             if key is None:
                 key = getpass.getpass('Impostare la MasterPassword -> ')
                 keyring.set_password('emauto', 'master', key)
-        keyring.set_password(service, in_filename, key)
+        keyring.set_password(service, key_pwd, key)
 
     if not out_filename:
         out_filename = os.path.splitext(in_filename)[0]
@@ -116,3 +116,9 @@ def decrypt_eaa(service, in_filename, key=None, out_filename=None,
 
     os.remove(out_filename)
     return data
+
+
+def keyringdel(in_filename):
+    key_pwd = os.path.splitext(os.path.split(in_filename)[-1])[0]
+    service = os.path.split(os.path.split(in_filename)[-2])[-1]
+    keyring.delete_password(service, key_pwd)

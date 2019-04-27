@@ -5,8 +5,7 @@
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
+#  the Free Software Foundation, version 3 of the License.
 #
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -110,11 +109,8 @@ def arg():
     else:
         folder = os.path.join(args.destination, args.folder)
 
-    if os.path.exists(os.path.join(config_folder,
-                                   f'data_config_{args.key}.eaa')):
-        data = decrypt_eaa('data_config',
-                           os.path.join(config_folder,
-                                        f'data_config_{args.key}.eaa'))
+    if os.path.exists(os.path.join(config_folder, f'{args.key}.eaa')):
+        data = decrypt_eaa(os.path.join(config_folder, f'{args.key}.eaa'))
         folder = data['folder']
         sent = glob.glob(folder + "/*")
         sent = [os.path.split(path)[1] for path in sent]
@@ -141,8 +137,7 @@ def arg():
                 "folder": folder,
                 "number": args.number,
                 "creationDate": str(datetime.date.today())}
-        encrypt_eaa('data_config',
-                    os.path.join(config_folder, f'data_config_{args.key}.json'),
+        encrypt_eaa(os.path.join(config_folder, f'{args.key}.json'),
                     data=data)
 
     return data['key'], data['folder'], data['number'], args.options, (

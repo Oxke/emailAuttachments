@@ -17,7 +17,7 @@ Al primo avvio saranno da impostare molte delle possibili preferenze, ma già
 dalla seconda si può riutilizzare un set di preferenze chiamato 'settings 
 file' salvato la prima volta con un nome a scelta.
 
-I file settings sono salvati come `*.eaa` (EmailAuttachments -> 
+I file settings sono salvati come `.eaa` (EmailAuttachments -> 
 EmailAuto-Attachments) e per una questione di sicurezza sono crittati, perciò
 bisognerà ogni volta che si crea un progetto scrivere la password di 
 crittatura, che verrà salvata da keyring. Per comodità, esiste una 

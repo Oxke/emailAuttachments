@@ -6,8 +6,7 @@
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
+#  the Free Software Foundation, version 3 of the License.
 #
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -47,8 +46,7 @@ def arg():
         with open(including_root(
                 'config_folder\\settings.json')) as def_sett_file:
             def_settings = json.load(def_sett_file)
-        dati = decrypt_eaa('config_folder',
-                           including_root(def_settings['general']['settings']))
+        dati = decrypt_eaa(including_root(def_settings['general']['settings']))
     except Exception as e:
         if '-h' not in sys.argv[1:]:
             raise e
@@ -95,16 +93,16 @@ def arg():
                                                       'settings')
     parser2 = subparsers.add_parser('Delete', help='help for Delete')
     parser2.add_argument('delete', help='distrugge tutto')
+    # TODO: Settings tipo (display(prjs, settings), set, setdefault)
     args = parser.parse_args(sys.argv[1:])
     if args.command == 'Main':
         if args.settings:
-            dati = decrypt_eaa('config_folder',
-                               including_root(f'config'
+            dati = decrypt_eaa(including_root(f'config'
                                               f'_folder\\{args.settings}.eaa'))
         numb = 1
         def_key = dati['general']['def_key'].replace('$', str(numb))
         while os.path.exists(including_root(f'config_folder\\data_config\\'
-                                            f'data_config_{def_key}.eaa')):
+                                            f'{def_key}.eaa')):
             numb += 1
             def_key = dati['general']['def_key'].replace('$', str(numb))
         dati['general']['def_key'] = args.key if args.key else def_key
@@ -140,10 +138,9 @@ if __name__ == "__main__":
             else:
                 sys.argv = sys.argv[:1] + ['Main'] + sys.argv[1:]
     key, act, command = arg()
-    config_f = including_root(f"config_folder\\data_config\\data_c"
-                              f"onfig_{key}.eaa")
+    config_f = including_root(f"config_folder\\data_config\\{key}.eaa")
     if os.path.exists(config_f):
-        data = decrypt_eaa('data_config', config_f)
+        data = decrypt_eaa(config_f)
     else:
         data = {
             'creationDate': str(datetime.date.today()),
@@ -162,7 +159,7 @@ if __name__ == "__main__":
             try:
                 rmtree(data['folder'])
                 os.remove(config_f)
-                keyring.delete_password('data_config', config_f)
+
                 print('Eliminata!')
             except Exception as ex:
                 print("C'è stato un errore:", ex, sep=' ')
@@ -176,13 +173,10 @@ if __name__ == "__main__":
             setting['general']['def_key'] += '$'
         if input(f'Vuoi che il file settings "{name}" diventi di default? -> '
                  f'').lower() not in ('no', 'n'):
-            d = decrypt_eaa('config_folder',
-                            including_root('config_folder\\settings.eaa'))
+            d = decrypt_eaa(including_root('config_folder\\settings.eaa'))
             d['general']['settings'] = f'config_folder\\{name}.eaa'
-            encrypt_eaa('config_folder',
-                        including_root('config_folder\\settings.json'), data=d)
-        encrypt_eaa('config_folder',
-                    including_root('config_folder\\{name}.json'), data=setting)
+            encrypt_eaa(including_root('config_folder\\settings.json'), data=d)
+        encrypt_eaa(including_root('config_folder\\{name}.json'), data=setting)
     else:
         dest = os.path.split(data['folder'])[0]
         name_folder = os.path.split(data['folder'])[1]
