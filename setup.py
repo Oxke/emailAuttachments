@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='emailAuto',
+    name='emailAuttachments',
     version='v3.0.1',
     packages=setuptools.find_packages(),
     url='https://github.com/Oxke/emailAuttachments',
@@ -14,6 +14,6 @@ setuptools.setup(
     description='Un progetto per selezionare e ordinare alcune mail ricevute',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    install_requires=['pyzmail36', 'imapclient', 'pycriptodome', 'keyring'],
+    install_requires=['pyzmail36', 'imapclient', 'pycryptodome', 'keyring'],
     python_requires='~=3.6'
 )
