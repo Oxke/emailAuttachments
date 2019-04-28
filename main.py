@@ -33,6 +33,7 @@ import sys
 from pathlib import Path
 from shutil import rmtree
 
+import settings
 from crypto import *
 
 
@@ -47,6 +48,9 @@ def arg():
                 'config_folder\\settings.json')) as def_sett_file:
             def_settings = json.load(def_sett_file)
         dati = decrypt_eaa(including_root(def_settings['general']['settings']))
+        if def_settings['general']['settings'] == \
+                'config_folder\\settings.json':
+            del dati['general']['settings']
     except Exception as e:
         if '-h' not in sys.argv[1:]:
             raise e
@@ -93,7 +97,7 @@ def arg():
                                                       'settings')
     parser2 = subparsers.add_parser('Delete', help='help for Delete')
     parser2.add_argument('delete', help='distrugge tutto')
-    # TODO: Settings tipo (display(prjs, settings), set, setdefault)
+    parser3 = subparsers.add_parser('Settings', help='easy all')
     args = parser.parse_args(sys.argv[1:])
     if args.command == 'Main':
         if args.settings:
@@ -125,6 +129,9 @@ def arg():
         dati['general']['def_key'] = args.delete
         return dati['general']['def_key'], (args.info, dati,
                                             args.delete), 'Delete'
+    elif args.command == 'Settings':
+        settings.setup()
+        arg()
     return dati['general']['def_key'], (None, None, None), 'Main'
 
 
@@ -132,9 +139,12 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         sys.argv += ['Main']
     if '-h' not in sys.argv:
-        if sys.argv[1] not in ['Main', 'Delete']:
+        if sys.argv[1] not in ['Main', 'Delete', 'Settings']:
             if sys.argv[1] == '-i':
-                sys.argv = sys.argv[:2] + ['Main'] + sys.argv[2:]
+                if len(sys.argv) == 2:
+                    sys.argv = sys.argv[:2] + ['Main'] + sys.argv[2:]
+                elif sys.argv[2] not in ['Main', 'Delete', 'Settings']:
+                    sys.argv = sys.argv[:2] + ['Main'] + sys.argv[2:]
             else:
                 sys.argv = sys.argv[:1] + ['Main'] + sys.argv[1:]
     key, act, command = arg()
@@ -173,10 +183,13 @@ if __name__ == "__main__":
             setting['general']['def_key'] += '$'
         if input(f'Vuoi che il file settings "{name}" diventi di default? -> '
                  f'').lower() not in ('no', 'n'):
-            d = decrypt_eaa(including_root('config_folder\\settings.eaa'))
-            d['general']['settings'] = f'config_folder\\{name}.eaa'
-            encrypt_eaa(including_root('config_folder\\settings.json'), data=d)
-        encrypt_eaa(including_root('config_folder\\{name}.json'), data=setting)
+            with open(including_root('config_folder\\settings.json')) as fp:
+                d = json.load(fp)
+            with open(including_root('config_folder\\settings.json'), 'w') as \
+                    fp:
+                json.dump(d, fp)
+        encrypt_eaa(including_root(f'config_folder\\{name}.json'),
+                    data=setting)
     else:
         dest = os.path.split(data['folder'])[0]
         name_folder = os.path.split(data['folder'])[1]

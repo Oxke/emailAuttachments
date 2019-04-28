@@ -14,6 +14,6 @@ setuptools.setup(
     description='Un progetto per selezionare e ordinare alcune mail ricevute',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    install_requires=['pyzmail36, imapclient, pycriptodome', 'keyring'],
+    install_requires=['pyzmail36', 'imapclient', 'pycriptodome', 'keyring'],
     python_requires='~=3.6'
 )
