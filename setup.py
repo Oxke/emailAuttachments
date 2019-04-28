@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='emailAuttachments',
-    version='v3.0.1',
+    name='emAuttAchments',
+    version='v3.0.2',
     packages=setuptools.find_packages(),
     url='https://github.com/Oxke/emailAuttachments',
     license='GNU GPLv3.0',

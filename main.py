@@ -33,8 +33,8 @@ import sys
 from pathlib import Path
 from shutil import rmtree
 
-from emailAuttachments import settings
-from emailAuttachments.crypto import *
+import settings
+from crypto import *
 
 
 def including_root(path):

@@ -31,7 +31,7 @@ from pathlib import Path
 import imapclient
 import pyzmail
 
-from emailAuttachments.crypto import *
+from crypto import *
 
 SENT = []
 NOMEHOST = {
