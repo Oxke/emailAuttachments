@@ -21,7 +21,7 @@ __author__ = "Oxke"
 __contact__ = "oseaetobia@gmail.com"
 __copyright__ = "Copyright (C) 2019, Oxke"
 __license__ = "GNU GPLv3.0"  # Read the file LICENSE for more information
-__project__ = "emailAuto"
+__project__ = "emailAuttachments"
 __version__ = "v3.0.1"
 __date__ = "2019-02-03"
 
