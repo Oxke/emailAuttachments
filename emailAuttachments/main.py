@@ -22,7 +22,7 @@ __contact__ = "oseaetobia@gmail.com"
 __copyright__ = "Copyright (C) 2019, Oxke"
 __license__ = "GNU GPLv3.0"  # Read the file LICENSE for more information
 __project__ = "emailAuto"
-__version__ = "v2.3.0"
+__version__ = "v3.0.1"
 __date__ = "2019-02-03"
 
 import argparse
@@ -33,8 +33,8 @@ import sys
 from pathlib import Path
 from shutil import rmtree
 
-import settings
-from crypto import *
+from emailAuttachments import settings
+from emailAuttachments.crypto import *
 
 
 def including_root(path):

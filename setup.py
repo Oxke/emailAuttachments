@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='emailAuto',
-    version='v2.2.2',
+    version='v3.0.1',
     packages=setuptools.find_packages(),
     url='https://github.com/Oxke/emailAuttachments',
     license='GNU GPLv3.0',
