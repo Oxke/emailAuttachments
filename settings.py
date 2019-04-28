@@ -250,8 +250,8 @@ def choix3(ch3):
                 rmtree(data['folder'])
                 os.remove(fin_dc[int(ch3[1]) - 1])
                 print('Eliminata!')
-            choix1(ch3[0])
             fin_dc = glob(including_root('config_folder\\data_config\\*.eaa'))
+            choix1(ch3[0])
         elif ch3[2] == '5':  # Torna alla scelta della Raccolta
             print()
             choix1(ch3[0])
