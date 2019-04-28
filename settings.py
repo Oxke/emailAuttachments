@@ -32,7 +32,7 @@ from shutil import rmtree
 from crypto import *
 from main import including_root  # NOTE: I don't know why, it runs only
 
-#  you start the program from main
+#  if you start the program from main
 
 fin_cf = glob(including_root('config_folder\\*.eaa'))
 fin_dc = glob(including_root('config_folder\\data_config\\*.eaa'))
