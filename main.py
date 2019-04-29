@@ -22,7 +22,7 @@ __contact__ = "oseaetobia@gmail.com"
 __copyright__ = "Copyright (C) 2019, Oxke"
 __license__ = "GNU GPLv3.0"  # Read the file LICENSE for more information
 __project__ = "emailAuttachments"
-__version__ = "v3.0.2"
+__version__ = "v3.0.3"
 __date__ = "2019-02-03"
 
 import argparse
@@ -97,7 +97,8 @@ def arg():
                                                       'settings')
     parser2 = subparsers.add_parser('Delete', help='help for Delete')
     parser2.add_argument('delete', help='distrugge tutto')
-    parser3 = subparsers.add_parser('Settings', help='easy all')
+    # noinspection PyUnusedLocal
+    parser3 = subparsers.add_parser('Settings', help='Settings made easy')
     args = parser.parse_args(sys.argv[1:])
     if args.command == 'Main':
         if args.settings:
@@ -200,8 +201,9 @@ if __name__ == "__main__":
         argscheck = [sys.executable, including_root("check.py"), "-d",
                      dest, "-f", name_folder, "-n", num,
                      '-em', act[1]['email']['email'], '-pwd',
-                     act[1]['email']['password'], data['key']]
+                     act[1]['email']['password']]
         if len(act[1]['general']['imap_options']) != 0:
             argscheck += ['-o', " ".join(act[1]['general']['imap_options'])]
+        argscheck += [data['key']]
         subprocess.Popen(argscheck, creationflags=subprocess.CREATE_NEW_CONSOLE)
         print(*argscheck)

@@ -16,6 +16,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 #  If you want to contact me, -> oseaetobia@gmail.com
+import subprocess
 
 __author__ = "Oxke"
 __license__ = "GNU GPLv3.0"  # Read the file LICENSE for more information
@@ -23,7 +24,6 @@ __project__ = "emailAuto"
 
 import argparse
 import datetime
-import glob
 import re
 import smtplib
 from pathlib import Path
@@ -34,40 +34,8 @@ import pyzmail
 from crypto import *
 
 SENT = []
-NOMEHOST = {
-    'gmail.com': {
-        'smtp': ('smtp.gmail.com', 587),
-        'imap': 'imap.gmail.com',
-    },
-    'alice.it': {
-        'smtp': ('out.alice.it', 587),
-        'imap': 'in.alice.it',
-    },
-    'aruba.it': {
-        'smtp': ('smtp.aruba.it', 587),
-        'imap': 'imap.aruba.it',
-    },
-    'email.it': {
-        'smtp': ('out.email.it', 587),
-        'imap': 'in.email.it',
-    },
-    'inwind.it': {
-        'smtp': ('mail.inwind.it', 587),
-        'imap': 'imapmail.inwind.it',
-    },
-    'libero.it': {
-        'smtp': ('mail.libero.it', 587),
-        'imap': 'imapmail.libero.it',
-    },
-    'yahoo.it': {
-        'smtp': ('smtp.mail.yahoo.it', 587),
-        'imap': 'imap.mail.yahoo.it',
-    },
-    'outlook.com': {
-        'smtp': ('smtp-mail.outlook.com', 587),
-        'imap': 'imap-mail.outlook.com',
-    },
-}
+with open(including_root('nomehost.json')) as filenomehost:
+    NOMEHOST = json.load(filenomehost)
 
 
 def get_project_root() -> str:
@@ -112,7 +80,7 @@ def arg():
     if os.path.exists(os.path.join(config_folder, f'{args.key}.eaa')):
         data = decrypt_eaa(os.path.join(config_folder, f'{args.key}.eaa'))
         folder = data['folder']
-        sent = glob.glob(folder + "/*")
+        sent = glob(folder + "/*")
         sent = [os.path.split(path)[1] for path in sent]
         for file in sent:
             if not re.search('^\[.+]-([A-Z])([A-Z][a-z]+) (.+)', file):
@@ -123,15 +91,20 @@ def arg():
         try:
             os.mkdir(folder)
         except FileExistsError:
-            print('Probabilmente avevi già creato il '
-                  'progetto in una versione precedente del '
-                  'programma. Ti consiglio di eliminarlo con '
-                  'il comando "emAutoGet -del ..."')
-            input()
-            raise FileExistsError('Probabilmente avevi già creato il '
-                                  'progetto in una versione precedente del '
-                                  'programma. Ti consiglio di eliminarlo con '
-                                  'il comando "emAutoGet -del ..."')
+            in1 = input('Probabilmente avevi già creato il '
+                        'progetto. Lo elimino (1) o lo apro in Esplora Risorse '
+                        'per fartene vedere il contenuto più facilmente? (2) '
+                        '-> ')
+            if in1 == 1:
+                shutil.rmtree(folder)
+                os.mkdir(folder)
+            elif in1 == 2:
+                subprocess.run(['C:\\Windows\\explorer.exe', folder])
+                input('Elimina Manualmente tutti i file che sono presenti in '
+                      'quella cartella e poi premi invio, io creerò la nuova')
+                if os.path.exists(folder):
+                    shutil.rmtree(folder)
+                os.mkdir(folder)
 
         data = {"key": args.key,
                 "folder": folder,
@@ -145,11 +118,24 @@ def arg():
         args.password)
 
 
+def nhost(dominio):
+    def chiedi(domin):
+        imap = input('Non conosco questo dominio, sapresti dirmi qual è il '
+                     'server imap? -> ')
+        smtp = input('E quello smtp? -> ')
+        NOMEHOST[domin] = {'imap': imap, 'smtp': smtp}
+        with open(including_root('nomehost.json')) as fp:
+            json.dump(NOMEHOST, fp)
+        return nhost(domin)
+
+    return NOMEHOST.get(dominio, chiedi(dominio))
+
+
 def main(key, folder, number, imap_options, email):
     global msg, SENT
     print(f'Avanzamento della raccolta "{key}"')
     identifier_regex = re.compile(f'^\[{key}] (([A-Z])[a-z]+ ([A-Z][a-z]+))')
-    with imapclient.IMAPClient(NOMEHOST[email[0].split('@')[1]]['imap'],
+    with imapclient.IMAPClient(nhost(email[0].split('@')[1])['imap'],
                                ssl=True, use_uid=True) as imap_obj:
         imap_obj.login(*email)
         while len(SENT) < number:

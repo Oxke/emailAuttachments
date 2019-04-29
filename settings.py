@@ -25,12 +25,16 @@ visualizzare e modificare le possibili preferenze del programma"""
 
 import subprocess
 import sys
-from glob import glob
+from pathlib import Path
 from pprint import pprint
 from shutil import rmtree
 
 from crypto import *
-from main import including_root
+
+
+def including_root(path):
+    """Return absolute path"""
+    return os.path.join(Path(__file__).parent, path)
 
 
 def modify(ch):

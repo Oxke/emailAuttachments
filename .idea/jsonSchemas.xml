@@ -15,6 +15,9 @@
                   <Item>
                     <option name="path" value="config_folder/settings.json" />
                   </Item>
+                  <Item>
+                    <option name="path" value="nomehost.json" />
+                  </Item>
                 </list>
               </option>
             </SchemaInfo>

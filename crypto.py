@@ -24,17 +24,21 @@ __project__ = "emailAuto"
 import getpass
 import json
 import os
+import shutil
 import struct
+from glob import glob
 
 import keyring
 from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA3_256
 
+from main import including_root
+
 
 def encrypt_eaa(in_filename, data=None, out_filename=None, chunksize=64 * 1024):
     key_pwd = os.path.splitext(os.path.split(in_filename)[-1])[0]
-    service = os.path.split(in_filename)[-2]
+    service = os.path.split(os.path.split(in_filename)[-2])[-1]
     key = getpass.getpass(f'Quale vuoi che sia la password per '
                           f'"{os.path.split(in_filename)[-1]}"? '
                           f'(lascia vuoto e imposterò questa '
@@ -92,30 +96,84 @@ def decrypt_eaa(in_filename, key=None, out_filename=None, chunksize=64 * 1024):
     if not out_filename:
         out_filename = os.path.splitext(in_filename)[0]
     key = SHA3_256.new().update(key.encode()).digest()
+    try:
+        with open(in_filename, 'rb') as infile:
+            origsize = struct.unpack('<Q', infile.read(struct.calcsize('Q')))[0]
+            iv = infile.read(16)
+            decryptor = AES.new(key, AES.MODE_CBC, IV=iv)
 
-    with open(in_filename, 'rb') as infile:
-        origsize = struct.unpack('<Q', infile.read(struct.calcsize('Q')))[0]
-        iv = infile.read(16)
-        decryptor = AES.new(key, AES.MODE_CBC, IV=iv)
+            with open(out_filename, 'wb') as outfile:
+                while True:
+                    chunk = infile.read(chunksize)
+                    if len(chunk) == 0:
+                        break
+                    decd = decryptor.decrypt(chunk)
+                    n = len(decd)
+                    if origsize > n:
+                        outfile.write(decd)
+                    else:
+                        outfile.write(decd[:origsize])
+                    origsize -= n
 
-        with open(out_filename, 'wb') as outfile:
-            while True:
-                chunk = infile.read(chunksize)
-                if len(chunk) == 0:
-                    break
-                decd = decryptor.decrypt(chunk)
-                n = len(decd)
-                if origsize > n:
-                    outfile.write(decd)
+            with open(out_filename) as fp:
+                data = json.load(fp)
+        os.remove(out_filename)
+        return data
+    except UnicodeDecodeError:
+        k_m = getpass.getpass('Mi spiace, la password o il nome del file '
+                              'risultano errati! Provare a reinserire la '
+                              'password, altrimenti scrivi "pescegatto" per '
+                              'avviare la rimozione forzata (lasciando '
+                              'vuoto invece proverò ad usare la '
+                              'MasterPassword)--> ')
+        keyring.delete_password(service, key_pwd)
+        if k_m == 'pescegatto':
+            for file_settings in glob(including_root('config_folder\\*.*')):
+                if file_settings == including_root(
+                        'config_folder\\settings.json'):
+                    with open(file_settings) as fp:
+                        d = json.load(fp)
+                    f = d['general']['def_dest']
                 else:
-                    outfile.write(decd[:origsize])
-                origsize -= n
+                    f = decrypt_eaa(file_settings)['general']['def_dest']
+                if key_pwd in map(lambda x: os.path.split(x)[-1],
+                                  next(os.walk(f))[1]):
+                    print('Trovata la cartella di destinazione del file')
+                    shutil.rmtree(os.path.join(f, key_pwd))
+                    break
+            else:
+                a = input('Non ho trovato la Raccolta negli indirizzi scritti '
+                          'nei '
+                          'file settings, tu sai dov\'è? (1 per dirmi la path),'
+                          ' oppure me ne frego altamente ed elimino solo il '
+                          'data_config? (2) -> ')
+                if a == 1:
+                    f = a
+                    if key_pwd in map(lambda x: os.path.split(x)[-1],
+                                      next(os.walk(f))[1]):
+                        shutil.rmtree(os.path.join(f, key_pwd))
+                    else:
+                        print('Ahahah no. Bello prendermi in giro ma quella '
+                              'non è la cartella dove sono immagazzinati gli '
+                              'allegati')
+                        f = input('Riscrivimi la path della cartella '
+                                  'corretta, stavolta, altrimenti io elimino '
+                                  'solo il data_config e poi son cavoli tuoi '
+                                  'se mentre fai altre raccolte trovi errori')
+                        if key_pwd in map(lambda x: os.path.split(x)[-1],
+                                          next(os.walk(f))[1]):
+                            shutil.rmtree(os.path.join(f, key_pwd))
+            os.remove(in_filename)
+            print('Raccolta eliminata...')
+            input()
+            exit()
 
-        with open(out_filename) as fp:
-            data = json.load(fp)
-
-    os.remove(out_filename)
-    return data
+        elif k_m == '':
+            decrypt_eaa(in_filename, key=keyring.get_password('emauto',
+                                                              'master'))
+        else:
+            keyring.set_password(service, key_pwd, k_m)
+            decrypt_eaa(in_filename, key=k_m)
 
 
 def keyringdel(in_filename):

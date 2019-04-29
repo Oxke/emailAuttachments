@@ -21,12 +21,9 @@ I file settings sono salvati come `.eaa` (EmailAuttachments ->
 EmailAuto-Attachments) e per una questione di sicurezza sono crittati, perciò
 bisognerà ogni volta che si crea un progetto scrivere la password di 
 crittatura, che verrà salvata da keyring. Per comodità, esiste una 
-MasterPassword impostabile e che può essere applicata a un file scrivendo 
-come password '' (ossia lasciando vuoto). La prima volta che lo si fa 
-chiederà di inserire una MasterPassword. Quest'ultima sarà modificabile 
-dalla versione 3.0.0 del programma, dove ci sarà un'altro subparser dove si 
-possono visualizzare tutte le impostazioni e modificarle singolarmente senza
- dover creare una Raccolta.
+MasterPassword impostabile e che può essere applicata a un file quando si sta
+ creando una nuova raccolta scrivendo come password '' (ossia lasciando 
+ vuoto). La prima volta che lo si fa chiederà di inserire una MasterPassword.
 
 Viene chiamata "Raccolta" tutta l'operazione di controllo e salvataggio degli 
 allegati.
@@ -49,7 +46,7 @@ lavora sincronizzandosi) e di che file sono arrivati.
 ## Documentation
 Questo l'help di argparse (ottenibile con il comando `python main.py -h`):
   ```
-usage: main.py [-h] [-i] {[Main],Delete} ...
+usage: main.py [-h] [-i] {[Main], Delete, Settings} ...
 
 Programmino per gestire le auto email contenenti allegati. Se non si specifica
 un subparser, verrà considerato il "Main", a meno che non si chiami l'help e
@@ -57,9 +54,10 @@ in questo modo si otterrà quello generale. Per ottenere l'help del "Main"
 basterà quindi chiamare "python main.py Main -h"
 
 positional arguments:
-  {Main,Delete}  Possibili quattro diversi tipi di azione
-    Main         Main action
-    Delete       help for Delete
+  {Main,Delete,Settings}  Possibili quattro diversi tipi di azione
+    Main                  Main action
+    Delete                help for Delete
+    Settings              Settings made easy
 
 optional arguments:
   -h, --help     show this help message and exit
@@ -78,8 +76,17 @@ Comando | Funzione
 -em {email}| Scrivi il tuo indirizzo email
 -pwd {password}| Scrivi la password del tuo account
 -ss {settings}| Usate questo comando per salvare la configurazione delle preferenze corrente
+key | Unico comando posizionale, è il nome che la nuova Raccolta dovrà avere. 
+Può anche essere omessa, in questo caso verrà generato un nome in base alle 
+impostazioni del file settings di default.
 
-Infine il sottoparser "Delete" richiede solamente di inserire il nome della Raccolta da eliminare.
+Il sottoparser "Delete" richiede solamente di inserire il nome della Raccolta
+ da eliminare.
+ 
+ Il subparser "Settings", invece, permette di visualizzare tutti i file 
+ settings e tutte le raccolte e di gestirle, ma essendo molto più 
+ user-friendly, non mi soffermerò a descriverne i contenuti, che si possono 
+ facilmente capire dal programma stesso.
 
 ## Thirdy-part modules
 Il programma necessita di:
