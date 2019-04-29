@@ -1,0 +1,58 @@
+{
+  "gmail.com": {
+    "smtp": [
+      "smtp.gmail.com",
+      587
+    ],
+    "imap": "imap.gmail.com"
+  },
+  "alice.it": {
+    "smtp": [
+      "out.alice.it",
+      587
+    ],
+    "imap": "in.alice.it"
+  },
+  "aruba.it": {
+    "smtp": [
+      "smtp.aruba.it",
+      587
+    ],
+    "imap": "imap.aruba.it"
+  },
+  "email.it": {
+    "smtp": [
+      "out.email.it",
+      587
+    ],
+    "imap": "in.email.it"
+  },
+  "inwind.it": {
+    "smtp": [
+      "mail.inwind.it",
+      587
+    ],
+    "imap": "imapmail.inwind.it"
+  },
+  "libero.it": {
+    "smtp": [
+      "mail.libero.it",
+      587
+    ],
+    "imap": "imapmail.libero.it"
+  },
+  "yahoo.it": {
+    "smtp": [
+      "smtp.mail.yahoo.it",
+      587
+    ],
+    "imap": "imap.mail.yahoo.it"
+  },
+  "outlook.com": {
+    "smtp": [
+      "smtp-mail.outlook.com",
+      587
+    ],
+    "imap": "imap-mail.outlook.com"
+  }
+}
