@@ -119,16 +119,16 @@ def arg():
 
 
 def nhost(dominio):
-    def chiedi(domin):
-        imap = input('Non conosco questo dominio, sapresti dirmi qual è il '
+    try:
+        return NOMEHOST[dominio]
+    except KeyError:
+        imap = input(f'Non conosco "{dominio}", sapresti dirmi qual è il '
                      'server imap? -> ')
         smtp = input('E quello smtp? -> ')
-        NOMEHOST[domin] = {'imap': imap, 'smtp': smtp}
-        with open(including_root('nomehost.json')) as fp:
+        NOMEHOST[dominio] = {'imap': imap, 'smtp': smtp}
+        with open(including_root('nomehost.json'), 'w') as fp:
             json.dump(NOMEHOST, fp)
-        return nhost(domin)
-
-    return NOMEHOST.get(dominio, chiedi(dominio))
+        return nhost(dominio)
 
 
 def main(key, folder, number, imap_options, email):

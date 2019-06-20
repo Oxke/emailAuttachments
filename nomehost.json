@@ -54,5 +54,9 @@
       587
     ],
     "imap": "imap-mail.outlook.com"
+  },
+  "myself.com": {
+    "imap": "imap.mail.com",
+    "smtp": "smtp.mail.com"
   }
 }

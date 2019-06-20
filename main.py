@@ -22,7 +22,7 @@ __contact__ = "oseaetobia@gmail.com"
 __copyright__ = "Copyright (C) 2019, Oxke"
 __license__ = "GNU GPLv3.0"  # Read the file LICENSE for more information
 __project__ = "emailAuttachments"
-__version__ = "v3.0.3"
+__version__ = "v3.1.0"
 __date__ = "2019-02-03"
 
 import argparse

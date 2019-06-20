@@ -97,6 +97,12 @@ Il programma necessita di:
 
 per poter funzionare
 
+#### Installation
+Per installare i moduli di terze parti richiesti è possibile semplicemente 
+scrivere da linea di comando dalla cartella dove è salvato il programma "py 
+setup.py install" e installerà tutti i moduli richiesti. Successivamente si 
+potrà semplicemente avviare il file main.py.
+
 ## License
 Un progetto per selezionare e ordinare alcune mail ricevute
 Copyright (C) 2019 Oxke

@@ -49,8 +49,8 @@ def modify(ch):
                 tomod2 = {'1': 'email', '2': 'password'}[tomod2]
                 data['email'][tomod2] = input(f'Inserire '
                                               f'la nuova {tomod2} -> ')
-                tomod2 = ("modificare 'email' (1), 'password' (2) o "
-                          "continuare (lasciare vuoto)? -> ")
+                tomod2 = input("modificare 'email' (1), 'password' (2) o "
+                               "continuare (lasciare vuoto)? -> ")
         elif tomod == '2':
             tomod2 = input('''modificare:
 1 - "def_key" = il nome della raccolta (includere "$" per indicare un numero)
@@ -75,6 +75,10 @@ scegliere o lasciare vuoto per annullare -> ''')
                         print('Ora le informazioni si vedranno')
                     else:
                         print('Ora le informazioni non si vedranno più')
+
+                elif tomod2 == "imap_options":
+                    data['general'][tomod2] = input('Inserire le nuove opzioni '
+                                                    'imap -> ').split(", ")
                 else:
                     data['general'][tomod2] = input(f'Inserire la nuova '
                                                     f'{tomod2} -> ')
