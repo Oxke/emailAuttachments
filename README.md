@@ -6,7 +6,6 @@ di allegati email
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-372/)
 [![GitHub license](https://img.shields.io/github/license/Oxke/emailAuttachments.svg)](https://github.com/Oxke/emailAuttachments/blob/master/LICENSE)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FOxke%2FemailAuttachments.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FOxke%2FemailAuttachments?ref=badge_shield)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Oxke/emailAuttachments/graphs/commit-activity)
 
 ##
 Potete usare questo progetto per controllare email di un certo tipo (si 
